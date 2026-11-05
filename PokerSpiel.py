@@ -1,6 +1,7 @@
 import random
 
-def pokersimulation(anzahl):
+#Führt die Pokersimulation durch und gibt die statistik zurück
+def pokersimulation(anzahl : int) -> dict[str, int]:
     ergebnisse = {
         "Royal Flush": 0,
         "Straight Flush": 0,
@@ -41,7 +42,8 @@ def pokersimulation(anzahl):
 
     return ergebnisse
 
-def checkRoyalFlush(gezogeneKarten):
+#Checkt ob in der Hand eine Royal Flush vorhanden ist
+def checkRoyalFlush(gezogeneKarten : list[int]) -> bool:
     if checkFlush(gezogeneKarten) is False:
         return False
     if checkStraight(gezogeneKarten) is False:
@@ -55,16 +57,16 @@ def checkRoyalFlush(gezogeneKarten):
         return True
     return False
 
-
-def checkStraightFlush(gezogeneKarten):
+#Checkt ob in der Hand eine Straight Flush vorhanden ist
+def checkStraightFlush(gezogeneKarten : list[int]) -> bool:
     if checkFlush(gezogeneKarten) is False:
         return False
     if checkStraight(gezogeneKarten) is False:
         return False
     return True
 
-
-def checkFlush(gezogeneKarten):
+#Checkt ob in der Hand eine Flush vorhanden ist
+def checkFlush(gezogeneKarten : list[int]) -> bool:
     farben = []
     
     for i in gezogeneKarten:
@@ -75,7 +77,8 @@ def checkFlush(gezogeneKarten):
             return False
     return True
 
-def checkStraight(gezogeneKarten):
+#Checkt ob in der Hand eine Straight vorhanden ist
+def checkStraight(gezogeneKarten : list[int]) -> bool:
     zahl = []
     for i in gezogeneKarten:
         x = i%13
@@ -91,7 +94,8 @@ def checkStraight(gezogeneKarten):
 
     return True
 
-def getRandom():
+#Gibt 5 gezogene Karten zurück, die zufällig aus einem Kartendeck gezogen wurden
+def getRandom() -> list[int]:
     karten = list(range(1,52))
     gezogene_karte = []
 
@@ -106,14 +110,17 @@ def getRandom():
 
     return gezogene_karte
 
-def checkSameCard(gezogeneKarten, Anzahl : int):
+#Checkt ob in der Hand eine bestimmte Anzahl an gleichen Karten vorhanden ist
+def checkSameCard(gezogeneKarten : list[int], Anzahl : int) -> bool:
     numbers = [karte % 13 for karte in gezogeneKarten]
     return any(numbers.count(number) == Anzahl for number in numbers)
 
-def checkFullHouse(gezogeneKarten):
+#Checkt ob in der Hand ein Full House vorhanden ist
+def checkFullHouse(gezogeneKarten : list[int]) -> bool:
     return checkSameCard(gezogeneKarten, 3) and checkSameCard(gezogeneKarten, 2)
 
-def checkTwoPair(gezogeneKarten):
+#Checkt ob in der Hand zwei Paare vorhanden sind
+def checkTwoPair(gezogeneKarten : list[int]) -> bool:
     zahlen = [karte % 13 for karte in gezogeneKarten]
     paare = sum(zahlen.count(zahl) == 2 for zahl in set(zahlen))
     return paare == 2
@@ -125,4 +132,4 @@ if __name__ == "__main__":
     ergebnisse = pokersimulation(anzahl)
     for hand, count in ergebnisse.items():
         prozent = (count / anzahl) * 100
-        print(f"{hand}: {prozent:.4f}%")
+        print(f"{hand}: {count} ({prozent:.4f}%)")
