@@ -1,18 +1,45 @@
 import random
 
-def pokersimulation():
-    gezogeneKarten = getRandom()
-    if checkRoyalFlush(gezogeneKarten):
-        return 1
-    if checkStraightFlush(gezogeneKarten):
-        return 2
+def pokersimulation(anzahl):
+    ergebnisse = {
+        "Royal Flush": 0,
+        "Straight Flush": 0,
+        "Vierling": 0,
+        "Full House": 0,
+        "Flush": 0,
+        "Straight": 0,
+        "Drilling": 0,
+        "Two Pair": 0,
+        "Pair": 0,
+        "High Card": 0
+    }
 
-    if checkFlush(gezogeneKarten):
-        return 5
-    if checkStraight(gezogeneKarten):
-        return 6
+    for i in range(anzahl):
+        gezogeneKarten = getRandom()
+        if checkRoyalFlush(gezogeneKarten):
+            hand = "Royal Flush"
+        elif checkStraightFlush(gezogeneKarten):
+            hand = "Straight Flush"
+        elif checkSameCard(gezogeneKarten, 4):
+            hand = "Vierling"
+        elif checkFullHouse(gezogeneKarten):
+            hand = "Full House"
+        elif checkFlush(gezogeneKarten):
+            hand = "Flush"
+        elif checkStraight(gezogeneKarten):
+            hand = "Straight"
+        elif checkSameCard(gezogeneKarten, 3):
+            hand = "Drilling"
+        elif checkTwoPair(gezogeneKarten):
+            hand = "Two Pair"
+        elif checkSameCard(gezogeneKarten, 2):
+            hand = "Pair"
+        else:
+            hand = "High Card"
 
-    return 10
+        ergebnisse[hand] += 1
+
+    return ergebnisse
 
 def checkRoyalFlush(gezogeneKarten):
     if checkFlush(gezogeneKarten) is False:
@@ -26,6 +53,8 @@ def checkRoyalFlush(gezogeneKarten):
             checkAssUKing.append(x)
     if 12 in checkAssUKing and 11 in checkAssUKing:
         return True
+    return False
+
 
 def checkStraightFlush(gezogeneKarten):
     if checkFlush(gezogeneKarten) is False:
@@ -48,7 +77,6 @@ def checkFlush(gezogeneKarten):
 
 def checkStraight(gezogeneKarten):
     zahl = []
-
     for i in gezogeneKarten:
         x = i%13
         zahl.append(x)
@@ -78,9 +106,23 @@ def getRandom():
 
     return gezogene_karte
 
+def checkSameCard(gezogeneKarten, Anzahl : int):
+    numbers = [karte % 13 for karte in gezogeneKarten]
+    return any(numbers.count(number) == Anzahl for number in numbers)
 
+def checkFullHouse(gezogeneKarten):
+    return checkSameCard(gezogeneKarten, 3) and checkSameCard(gezogeneKarten, 2)
+
+def checkTwoPair(gezogeneKarten):
+    zahlen = [karte % 13 for karte in gezogeneKarten]
+    paare = sum(zahlen.count(zahl) == 2 for zahl in set(zahlen))
+    return paare == 2
 
 
 
 if __name__ == "__main__":
-    pass
+    anzahl = 1000000
+    ergebnisse = pokersimulation(anzahl)
+    for hand, count in ergebnisse.items():
+        prozent = (count / anzahl) * 100
+        print(f"{hand}: {prozent:.4f}%")
